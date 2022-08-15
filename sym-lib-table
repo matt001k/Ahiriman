@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name "Ahriman")(type "KiCad")(uri "${KIPRJMOD}/Ahriman.kicad_sym")(options "")(descr ""))
+  (lib (name "Ahriman-rescue")(type "KiCad")(uri "${KIPRJMOD}/Ahriman-rescue.kicad_sym")(options "")(descr ""))
+)
