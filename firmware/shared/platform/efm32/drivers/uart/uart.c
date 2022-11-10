@@ -184,7 +184,6 @@ void UART_Deinit(void)
         NVIC_ClearPendingIRQ(irq);
         NVIC_DisableIRQ(irq);
         uCfg[uIdx].uart->IEN = 0U;
-
         uCfg[uIdx].uart->CTRL = 0U;
         uCfg[uIdx].uart->FRAME = 0U;
         uCfg[uIdx].uart->TRIGCTRL = 0U;
@@ -195,7 +194,6 @@ void UART_Deinit(void)
         uCfg[uIdx].uart->ROUTEPEN = 0U;
         uCfg[uIdx].uart->ROUTELOC0 = 0U;
         uCfg[uIdx].uart->ROUTELOC1 = 0U;
-
         CMU->HFPERCLKEN0 &= ~(uClockSelect);
         EXIT_CRITICAL();
     }
@@ -248,7 +246,6 @@ void UART_DeregisterTxCallback(UART_Type_t type)
     {
         uCfg[type].txCb = NULL;
     }
-
 }
 
 void UART_DeregisterRxCallback(UART_Type_t type)
@@ -272,7 +269,8 @@ void USART1_IRQHandler(void)
 
     if (uCfg[UART_DEBUG].uart->IF & USART_IF_RXDATAV)
     {
-        uData = uCfg[UART_DEBUG].uart->RXDATA;        if (uCfg[UART_DEBUG].rxCb)
+        uData = uCfg[UART_DEBUG].uart->RXDATA;
+        if (uCfg[UART_DEBUG].rxCb)
         {
             uCfg[UART_DEBUG].rxCb(&uData, sizeof(uData));
         }
