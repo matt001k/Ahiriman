@@ -196,6 +196,17 @@ BL_STATIC BL_INLINE void Jump_ToAppAbstract(BL_UINT32_T address)
     JUMP_TO_APP(address);
 }
 
+BL_STATIC BL_INLINE void Init_Abstract(void)
+{
+    CPU_Init();
+    GPIO_Init();
+    Flash_Init();
+    Timer_Init();
+    Delay_Init();
+    SPI_Init();
+    DMA_Init();
+}
+
 /**************************************************************************//**
  * @brief Configuration Entries for Serial Peripherals
  * 
@@ -456,6 +467,13 @@ BL_STATIC BL_INLINE void Jump_ToAppAbstract(BL_UINT32_T address)
  *****************************************************************************/
 #define HOLD_CFG                    \
     HOLD_ENTRY(Bootloader_Get)      \
+
+/**************************************************************************//**
+ * @brief Configuration for peripheral initialization
+ * 
+ *****************************************************************************/
+#define INIT_CFG                    \
+    INIT_ENTRY(Init_Abstract)
 
 #endif // __CONFIG_H
 

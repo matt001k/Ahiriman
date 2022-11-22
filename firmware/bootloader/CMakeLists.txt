@@ -1,5 +1,6 @@
 add_library(BOOTLOADER STATIC
     abstraction/hold/hold.c
+    abstraction/init/init.c
     abstraction/jump/jump.c
     abstraction/led/led.c
     abstraction/nvm/nvm.c
@@ -21,6 +22,7 @@ add_library(BOOTLOADER STATIC
 target_include_directories(BOOTLOADER PUBLIC
     config
     abstraction/hold
+    abstraction/init
     abstraction/jump
     abstraction/led
     abstraction/nvm
