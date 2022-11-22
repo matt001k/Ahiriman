@@ -24,6 +24,7 @@
 #include "delay.h"
 #include "spi.h"
 #include "atomic.h"
+#include "gpio.h"
 
 #define FLASH_BUF_SIZE ((GD25Q80C_PAGE_SIZE * 4U) + GD25Q80C_CMD_SIZE + \
                           GD25Q80C_ADDRESS_SIZE)
@@ -53,6 +54,7 @@ void Ext_FlashInit(void)
         (GD25Q80C_Atomic_Exit_t) Atomic_ExitCritical,
     };
 
+    GPIO_Set(FLASH_WP);
     GD25Q80C_Init(&gInst, cfg);
 
     SPI_RegisterTxCallback(SPI_FLASH, spi_TxDone);
