@@ -179,4 +179,20 @@ uint32_t Clock_GetFrequency(uint32_t clock)
     return fSystemClock;
 }
 
+void Clock_OutputInit(void)
+{
+    CMU->CTRL |= CMU_CTRL_CLKOUTSEL0_HFXO;
+    CMU->ROUTELOC0 |= CMU_ROUTELOC0_CLKOUT0LOC_LOC5;
+}
+
+void Clock_OutputStart(void)
+{
+    CMU->ROUTEPEN |= CMU_ROUTEPEN_CLKOUT0PEN;
+}
+
+void Clock_OutputStop(void)
+{
+    CMU->ROUTEPEN &= ~(CMU_ROUTEPEN_CLKOUT0PEN);
+}
+
 /**@} clock */

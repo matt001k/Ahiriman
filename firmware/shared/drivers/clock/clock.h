@@ -27,6 +27,9 @@
 void Clock_Init(uint32_t freq);
 void Clock_Deinit(void);
 uint32_t Clock_GetFrequency(uint32_t clock);
+void Clock_OutputInit(void);
+void Clock_OutputStart(void);
+void Clock_OutputStop(void);
 
 #endif // __CLOCK_H
 

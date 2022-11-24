@@ -89,6 +89,7 @@ void SPI_Init(void)
 
     for (uint8_t sIdx = 0U; sIdx < NUM_SPI; sIdx++)
     {
+        /* Configure the required clock */
         if(sCfg[sIdx].spi == USART0)
         {
             sClockSelect = CMU_HFPERCLKEN0_USART0;
@@ -106,21 +107,18 @@ void SPI_Init(void)
             sClockSelect = CMU_HFPERCLKEN0_USART3;
         }
         CMU->HFPERCLKEN0 |= sClockSelect;
-
+        /* Configure peripheral */
         sCfg[sIdx].spi->CTRL = USART_CTRL_SMSDELAY | USART_CTRL_SSSEARLY |
                                USART_CTRL_CLKPHA_SAMPLETRAILING |
                                USART_CTRL_CLKPOL_IDLEHIGH | USART_CTRL_SYNC |
                                USART_CTRL_MSBF;
-
         sCfg[sIdx].spi->FRAME = USART_FRAME_DATABITS_EIGHT |
                                  USART_FRAME_PARITY_NONE |
                                  USART_FRAME_STOPBITS_DEFAULT;
-
         SPI_BAUD_CALC(sCfg[sIdx].baud, sClkDiv);
         sCfg[sIdx].spi->CLKDIV = sClkDiv;
-
         sCfg[sIdx].spi->TIMING = _USART_TIMING_RESETVALUE;
-
+        /* Route pins required */
         sCfg[sIdx].spi->ROUTELOC0 = sCfg[sIdx].mosi | sCfg[sIdx].miso |
                                     sCfg[sIdx].clk;
         sCfg[sIdx].spi->ROUTEPEN = USART_ROUTEPEN_RXPEN |
@@ -128,11 +126,11 @@ void SPI_Init(void)
                                    UART_ROUTEPEN_CLKPEN;
         sCfg[sIdx].spi->CMD = USART_CMD_MASTEREN;
         while (!(sCfg[sIdx].spi->STATUS & USART_STATUS_MASTER)) {};
-
+        /* Emable RX and TX channels */
         sCfg[sIdx].spi->CMD = USART_CMD_RXEN | USART_CMD_TXEN;
         while (!(sCfg[sIdx].spi->STATUS &
                (USART_STATUS_TXENS | USART_STATUS_RXENS))) {};
-        
+        /* Set DMA callbacks required */        
         DMA_RegisterCb(sCfg[sIdx].txChannel, sCfg[sIdx].txDMACb, NULL);
         DMA_RegisterCb(sCfg[sIdx].rxChannel, sCfg[sIdx].rxDMACb, NULL);
     }
@@ -145,6 +143,7 @@ void SPI_Deinit(void)
     for (uint8_t sIdx = 0U; sIdx < NUM_SPI; sIdx--)
     {
         ENTER_CRITICAL();
+        /* Clear register values */
         sCfg[sIdx].spi->CTRL = 0U;
         sCfg[sIdx].spi->FRAME = 0U;
         sCfg[sIdx].spi->TRIGCTRL = 0U;
@@ -155,7 +154,6 @@ void SPI_Deinit(void)
         sCfg[sIdx].spi->ROUTEPEN = 0U;
         sCfg[sIdx].spi->ROUTELOC0 = 0U;
         sCfg[sIdx].spi->ROUTELOC1 = 0U;
-
         /* Disable clock for the peripheral */
         if(sCfg[sIdx].spi == USART0)
         {
@@ -178,35 +176,13 @@ void SPI_Deinit(void)
     }
 }
 
-void SPI_Transmit(SPI_Type_t type, uint8_t *data, uint32_t size)
-{
-    uint8_t ready = SPI_FLAG_CLEAR;
-    if (type < NUM_SPI && data && size)
-    {
-        while (ready == SPI_FLAG_CLEAR)
-        {
-            ENTER_CRITICAL();
-            if (sCfg[type].txReady && sCfg[type].rxReady)
-            {
-                ready = SPI_FLAG_SET;
-            }
-            EXIT_CRITICAL();
-        };
-        sCfg[type].spi->CMD = USART_CMD_CLEARTX;
-        sCfg[type].txReady = SPI_FLAG_CLEAR;
-        size = size < SPI_BUF_SIZE ? size : SPI_BUF_SIZE;
-        DMA_StartTransfer(SPI_FLASH_TX_DMA, data, size);
-    }
-}
-
-void SPI_Receive(SPI_Type_t type, uint8_t *data, uint32_t size);
-
 void SPI_TransmitReceive(SPI_Type_t type, uint8_t *txData,
                          uint8_t *rxData, uint32_t size)
 {
     uint8_t ready = SPI_FLAG_CLEAR;
     if (type < NUM_SPI && txData && rxData && size)
     {
+        /* Poll ready flags before beginning transmission if one is ongoing */
         while (ready == SPI_FLAG_CLEAR)
         {
             ENTER_CRITICAL();
@@ -216,6 +192,7 @@ void SPI_TransmitReceive(SPI_Type_t type, uint8_t *txData,
             }
             EXIT_CRITICAL();
         };
+        /* Begin transaction and clear ready flags */
         sCfg[type].txReady = SPI_FLAG_CLEAR;
         sCfg[type].rxReady = SPI_FLAG_CLEAR;
         sCfg[type].spi->CMD = USART_CMD_CLEARRX | USART_CMD_CLEARTX;
