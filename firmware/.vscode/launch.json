@@ -16,7 +16,11 @@
             "device": "EFM32TG11B520F128",
             "interface": "swd",
             "runToMain": false,
-            "postStartSessionCommands": ["monitor halt", "monitor reset", "monitor start"],
+            "postStartSessionCommands": [
+                "monitor halt",
+                "monitor reset",
+                "monitor start"
+            ],
             "armToolchainPath": "${env:AHRIMAN_ARM_TOOLCHAIN}"
         },
         {
@@ -30,8 +34,13 @@
             "svdFile": "${workspaceRoot}/.vscode/EFM32TG11B520F128GM64.svd",
             "device": "EFM32TG11B520F128",
             "interface": "swd",
-            "postStartSessionCommands": ["monitor halt", "monitor reset", "monitor start"],
-            "armToolchainPath": "${env:AHRIMAN_ARM_TOOLCHAIN}"
+            "postStartSessionCommands": [
+                "monitor halt",
+                "monitor reset",
+                "monitor start"
+            ],
+            "armToolchainPath": "${env:AHRIMAN_ARM_TOOLCHAIN}",
+            "preLaunchTask": "Build and Flash"
         }
     ]
 }

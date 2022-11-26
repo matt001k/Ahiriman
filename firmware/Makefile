@@ -44,5 +44,8 @@ ifeq ("$(wildcard $(BUILD_DIR))","")
 	@$(MKDIR) $(BUILD_DIR)
 endif
 
+flash:all
+	python scripts/flash.py ./build/ahriman_app.bin
+
 clean:
 	@$(RM) $(BUILD_DIR)
