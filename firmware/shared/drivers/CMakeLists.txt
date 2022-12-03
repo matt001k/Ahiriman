@@ -9,6 +9,7 @@ target_include_directories(DRIVERS_LIB INTERFACE
     flash
     gpio
     i2c
+    i2s
     spi
     timer
     uart
