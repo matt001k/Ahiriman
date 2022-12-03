@@ -8,6 +8,7 @@ add_library(PLATFORM_LIB STATIC
     efm32/drivers/flash/flash.c
     efm32/drivers/gpio/gpio.c
     efm32/drivers/i2c/i2c.c
+    efm32/drivers/i2s/i2s.c
     efm32/drivers/spi/spi.c
     efm32/drivers/timer/timer.c
     efm32/drivers/uart/uart.c
